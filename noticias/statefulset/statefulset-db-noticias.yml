@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-db-noticias
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: db-noticias
+      labels:
+        app: db-noticias
+    spec:
+      containers:
+        - name: db-noticias-container
+          image: aluracursos/mysql-db:1
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+                name: cm-db-noticias
+          volumeMounts:
+            - name: database-volume
+              mountPath: /diretorio-interno
+          resources:
+            requests:
+              cpu: 10m
+      volumes:
+        - name: database-volume
+          persistentVolumeClaim:
+            claimName: pvc-database
+  serviceName: svc-db-noticias
+  selector:
+    matchLabels:
+      app: db-noticias

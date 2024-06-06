@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
-  name: rs-portal-noticias
+  name: deployment-portal-noticias
 spec:
+  replicas: 1
   template:
     metadata:
       name: portal-noticias
@@ -20,7 +21,6 @@ spec:
           resources:
             requests:
               cpu: 10m
-  replicas: 2
   selector:
     matchLabels:
       app: portal-noticias

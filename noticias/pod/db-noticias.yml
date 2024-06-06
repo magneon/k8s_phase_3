@@ -13,3 +13,11 @@ spec:
       envFrom:
         - configMapRef:
             name: cm-db-noticias
+      volumeMounts:
+            - mountPath: /volume-interno
+              name: db-noticias-volume
+  volumes:
+    - name: db-noticias-volume
+      hostPath:
+        path: /C/Users/Public/volume-externo
+        type: Directory
