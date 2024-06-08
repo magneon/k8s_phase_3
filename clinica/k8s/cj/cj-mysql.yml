@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cj-mysql
+spec:
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mysql-cronjob-container
+              image: leonardosartorello/mysqldump:v4
+              env:
+              - name: MYSQL_ENV_DB_USER
+                valueFrom:
+                  configMapKeyRef:
+                    name: cm-clinica
+                    key: DB_USER
+              - name: MYSQL_ENV_DB_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: secret-mysql
+                    key: MYSQL_ROOT_PASSWORD
+              - name: MYSQL_ENV_DB_HOST
+                valueFrom:
+                  configMapKeyRef:
+                    name: cm-clinica
+                    key: DB_HOST
+          restartPolicy: OnFailure

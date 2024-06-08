@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-clinica
+spec:
+  template:
+    metadata:
+      name: clinica
+      labels:
+        app: clinica
+    spec:
+      containers:
+        - name: clinica-container-api
+          image: leonardosartorello/vollmed:v8
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                    name: secret-clinica
+                    key: DB_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: cm-clinica  
+          livenessProbe:
+            httpGet:
+              path: /paciente
+              port: 3000
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+  replicas: 3
+  selector:
+    matchLabels:
+      app: clinica
